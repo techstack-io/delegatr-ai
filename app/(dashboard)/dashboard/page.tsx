@@ -2,25 +2,36 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { Bot, TrendingUp, Users, Zap } from 'lucide-react';
 import { Suspense } from 'react';
+import DashboardClient from './dashboard-client';
 
 async function DashboardContent() {
   const { userId } = await auth();
   const user = await currentUser();
 
+<button
+  onClick={() => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('hasSeenScoutTour');
+      window.location.reload();
+    }
+  }}
+  className="fixed bottom-4 left-4 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-purple-700 z-50"
+></button>
+  
   return (
     <>
       {/* Welcome Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Welcome back, {user?.firstName || 'there'}! 👋
         </h1>
-        <p className="text-slate-300">
+        <p className="text-gray-600">
           Here's what's happening with your leads today.
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-tour-id="stats-cards">
         <StatCard
           icon={<Users className="w-8 h-8" />}
           title="Total Leads"
@@ -52,8 +63,8 @@ async function DashboardContent() {
       </div>
 
       {/* Getting Started Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-purple-500/20 rounded-xl p-8">
-        <h2 className="text-2xl font-bold text-white mb-4">🚀 Getting Started</h2>
+      <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-200" data-tour-id="getting-started">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">🚀 Getting Started</h2>
         <div className="space-y-4">
           <Step 
             number="1" 
@@ -77,7 +88,7 @@ async function DashboardContent() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-8 text-center">
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-center shadow-lg">
         <h2 className="text-2xl font-bold text-white mb-4">
           Ready to delegate your lead analysis?
         </h2>
@@ -94,13 +105,13 @@ async function DashboardContent() {
 
 export default function DashboardPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <DashboardClient>
       <div className="space-y-8">
-        <Suspense fallback={<div className="text-white">Loading...</div>}>
+        <Suspense fallback={<div className="text-gray-600">Loading...</div>}>
           <DashboardContent />
         </Suspense>
       </div>
-    </div>
+    </DashboardClient>
   );
 }
 
@@ -118,20 +129,20 @@ function StatCard({
   color: string;
 }) {
   const colorClasses = {
-    purple: 'text-purple-400 bg-purple-500/10',
-    red: 'text-red-400 bg-red-500/10',
-    blue: 'text-blue-400 bg-blue-500/10',
-    green: 'text-green-400 bg-green-500/10',
+    purple: 'text-purple-600 bg-purple-100',
+    red: 'text-red-600 bg-red-100',
+    blue: 'text-blue-600 bg-blue-100',
+    green: 'text-green-600 bg-green-100',
   }[color];
 
   return (
-    <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all">
-      <div className={`w-12 h-12 rounded-lg ${colorClasses} flex items-center justify-center mb-4`}>
+    <div className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all">
+      <div className={`w-12 h-12 rounded-xl ${colorClasses} flex items-center justify-center mb-4`}>
         {icon}
       </div>
-      <h3 className="text-slate-400 text-sm font-medium mb-1">{title}</h3>
-      <p className="text-3xl font-bold text-white mb-1">{value}</p>
-      <p className="text-slate-400 text-sm">{subtitle}</p>
+      <h3 className="text-gray-500 text-sm font-medium mb-1">{title}</h3>
+      <p className="text-3xl font-bold text-gray-800 mb-1">{value}</p>
+      <p className="text-gray-500 text-sm">{subtitle}</p>
     </div>
   );
 }
@@ -152,13 +163,13 @@ function Step({
       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
         completed 
           ? 'bg-green-500 text-white' 
-          : 'bg-purple-500/20 text-purple-400 border-2 border-purple-500'
+          : 'bg-purple-100 text-purple-600 border-2 border-purple-500'
       }`}>
         {completed ? '✓' : number}
       </div>
       <div className="flex-1">
-        <h3 className="text-white font-semibold mb-1">{title}</h3>
-        <p className="text-slate-400 text-sm">{description}</p>
+        <h3 className="text-gray-800 font-semibold mb-1">{title}</h3>
+        <p className="text-gray-600 text-sm">{description}</p>
       </div>
     </div>
   );
