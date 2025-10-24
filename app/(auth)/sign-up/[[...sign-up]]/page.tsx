@@ -1,11 +1,11 @@
-// app/(auth)/sign-in/[[...sign-in]]/page.tsx
+// app/(auth)/sign-up/[[...sign-up]]/page.tsx
 'use client';
 
-import { SignIn } from '@clerk/nextjs';
+import { SignUp } from '@clerk/nextjs';
 import Link from 'next/link';
 import { Bot } from 'lucide-react';
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <nav className="border-b border-purple-500/20 backdrop-blur-xl bg-gradient-to-r from-slate-900/80 via-purple-900/80 to-slate-900/80">
@@ -27,12 +27,12 @@ export default function SignInPage() {
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h2 className="text-4xl font-bold text-white mb-2">Welcome back</h2>
-            <p className="text-slate-300">Sign in to access your dashboard</p>
+            <h2 className="text-4xl font-bold text-white mb-2">Get started free</h2>
+            <p className="text-slate-300">Start turning visitors into leads today</p>
           </div>
 
           <div className="flex justify-center">
-            <SignIn
+            <SignUp
               redirectUrl="/dashboard"
               appearance={{
                 elements: {
@@ -53,6 +53,12 @@ export default function SignInPage() {
                 },
               }}
             />
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-slate-400">
+            <div>✓ No credit card required</div>
+            <div>✓ 14-day free trial</div>
+            <div>✓ Cancel anytime</div>
           </div>
         </div>
       </div>

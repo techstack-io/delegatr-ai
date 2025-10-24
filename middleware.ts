@@ -1,12 +1,24 @@
+// middleware.ts
 import { clerkMiddleware } from '@clerk/nextjs/server';
 
-export default clerkMiddleware();
+export default clerkMiddleware({
+  // Auth is NOT required on these
+  publicRoutes: [
+    '/',               // landing
+    '/sign-in(.*)',    // Clerk sign-in
+    '/sign-up(.*)',    // Clerk sign-up
+    '/api/webhooks(.*)'
+  ],
+  // optional: keep dev logs quiet
+  // debug: false,
+});
 
+// Only run middleware on real app/API paths.
+// Skips /_next/*, *.js|css|png|ico, etc.
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
+    '/((?!.+\\.[\\w]+$|_next).*)',
+    '/',
     '/(api|trpc)(.*)',
   ],
 };

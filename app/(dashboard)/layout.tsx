@@ -1,9 +1,11 @@
-// app/(dashboard)/layout.tsx
-import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
-import Link from 'next/link';
-import { UserButton } from '@clerk/nextjs';
-import { Bot, LayoutDashboard, Users, Settings, BarChart3, Menu, Bell, Search } from 'lucide-react';
+import React from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ScoutChat } from "../../components/scout/scout-chat";
+import UserMenu from "@/components/UserMenu";
+import TopCompany from "@/components/TopCompanyStat.client";
+import { Bot, LayoutDashboard, Users, Settings, BarChart3, Menu, Bell, Search } from "lucide-react";
 
 export default async function DashboardLayout({
   children,
@@ -11,9 +13,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { userId } = await auth();
-  
+
   if (!userId) {
-    redirect('/sign-in');
+    redirect("/sign-in");
   }
 
   return (
@@ -21,7 +23,6 @@ export default async function DashboardLayout({
       {/* Sidebar */}
       <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-gradient-to-br from-slate-800 via-purple-900 to-slate-900 shadow-2xl">
         <div className="flex h-full flex-col">
-          {/* Logo */}
           <div className="flex items-center gap-3 p-6 border-b border-white/10">
             <Bot className="w-8 h-8 text-purple-400" />
             <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -29,7 +30,6 @@ export default async function DashboardLayout({
             </span>
           </div>
 
-          {/* Navigation */}
           <nav className="flex-1 space-y-1 p-4">
             <NavItem href="/dashboard" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" active />
             <NavItem href="/dashboard/leads" icon={<Users className="w-5 h-5" />} label="Leads" />
@@ -37,7 +37,6 @@ export default async function DashboardLayout({
             <NavItem href="/dashboard/settings" icon={<Settings className="w-5 h-5" />} label="Settings" />
           </nav>
 
-          {/* Upgrade Card */}
           <div className="p-4">
             <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-4 text-center shadow-xl">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -55,11 +54,10 @@ export default async function DashboardLayout({
 
       {/* Main Content */}
       <div className="ml-64">
-        {/* Top Navigation */}
         <nav className="bg-white border-b border-gray-200 px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button className="lg:hidden">
+              <button className="lg:hidden" aria-label="Open menu">
                 <Menu className="w-6 h-6 text-gray-600" />
               </button>
               <div>
@@ -69,7 +67,6 @@ export default async function DashboardLayout({
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Search */}
               <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -79,28 +76,26 @@ export default async function DashboardLayout({
                 />
               </div>
 
-              {/* Notifications */}
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Notifications">
                 <Bell className="w-5 h-5 text-gray-600" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
 
-              {/* User */}
-              <UserButton 
+              <UserMenu
                 appearance={{
                   elements: {
-                    avatarBox: "w-10 h-10"
-                  }
+                    avatarBox: "w-10 h-10",
+                  },
                 }}
               />
             </div>
           </div>
         </nav>
 
-        {/* Page Content */}
-        <main className="p-8 bg-white">
-          {children}
-        </main>
+        <main className="p-8 bg-white">{children}</main>
+
+        {/* Client overlay: Scout concierge */}
+        <ScoutChat />
       </div>
     </div>
   );
@@ -111,9 +106,7 @@ function NavItem({ href, icon, label, active = false }: { href: string; icon: Re
     <Link
       href={href}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-        active
-          ? 'bg-white shadow-lg text-gray-800'
-          : 'text-gray-300 hover:bg-white/10'
+        active ? "bg-white shadow-lg text-gray-800" : "text-gray-300 hover:bg-white/10"
       }`}
     >
       {icon}
